@@ -48,10 +48,20 @@ project AdaCurses is
      for Default_Switches ("Ada") use
        ("-g",
         "-O2",
-        "-gnatafno",
-        "-gnatVa",   -- All validity checks
-        "-gnatwa");  -- Activate all optional errors
-     -- for Default_Switches ("C") use 
+        "-Wall",
+        "-gnatafUno",
+        "-gnatVaep",      -- All validity checks
+        "-gnatw.eDH.Y");  -- Activate all optional warnings
+     -- for Default_Switches ("C") use
   end Compiler;
   for Languages use ("C", "Ada");
+  package Install is
+     for Install_Name use "adacurses";
+     -- for Artifacts ("share/doc/adacurses") use ("../doc/Ada95.html", "../doc/ada");
+     for Artifacts ("share/doc/adacurses/adacurses_rm") use ("../" & Kind & "-obj" & "/gnatdoc/*");
+     for Artifacts ("share/examples/adacurses") use
+        ("../samples/*.ad?", "../samples/explain.txt", "../samples/Makefile", "../samples/README");
+     -- for Artifacts ("share/man/man1") use ("../doc/adacurses-config.1");
+     for Artifacts ("bin") use ("../gen/adacurses-config");
+  end Install;
 end AdaCurses;

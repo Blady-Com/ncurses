@@ -35,13 +35,13 @@ prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
 
-ADA_INCLUDE=@ADA_INCLUDE@
-ADA_OBJECTS=@ADA_OBJECTS@
+ADA_INCLUDE=${prefix}/include/adacurses/adacurses
+ADA_OBJECTS=${prefix}/lib/adacurses/adacurses
 
 VERSION=@NCURSES_MAJOR@.@NCURSES_MINOR@.@NCURSES_PATCH@
 
 CFLAGS="-aI$ADA_INCLUDE -aO$ADA_OBJECTS"
-LIBS="-L$ADA_OBJECTS -lAdaCurses"
+LIBS="-L$ADA_OBJECTS -ladacurses"
 
 THIS="adacurses"
 THIS_CFG="$THIS@DFT_ARG_SUFFIX@-config"

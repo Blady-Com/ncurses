@@ -58,6 +58,6 @@ test "x$model" = "xdynamic" && SHARE=
 sed \
 	-e '/for Library_Options use /s,-- ,'"$SHARE"',' \
 	-e '/for Default_Switches ("C") use/s,-- ,,' \
-	-e '/for Default_Switches ("C") use/s% use .*'%" use($param);"% \
+	-e '/for Default_Switches ("C") use/s% use.*'%" use($param);"% \
 	$input
 exit 0

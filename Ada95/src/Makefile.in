@@ -87,10 +87,10 @@ ADA             = @cf_ada_compiler@
 ADAPREP		= gnatprep
 ADAFLAGS        = @ADAFLAGS@ -I. -I$(srcdir)
 
-LIB_NAME	= AdaCurses
+LIB_NAME	= adacurses
 SONAME		= @ADA_SHAREDLIB@
 
-GNAT_PROJECT	= AdaCurses.gpr
+GNAT_PROJECT	= adacurses.gpr
 
 # build/source are the Ada95 tree
 BUILD_DIR	= ..
@@ -176,9 +176,6 @@ GENOBJS=$(ABASE)-menus-menu_user_data.o			\
 all ::  $(BUILD_DIR_LIB)/$(STATIC_LIBNAME)
 	@echo done
 
-$(ADA_INCLUDE) \
-$(ADA_OBJECTS) \
-$(LIBDIR) \
 $(BUILD_DIR_LIB) :
 	mkdir -p $@
 
@@ -193,18 +190,6 @@ install \
 install.libs :: \
 		$(BUILD_DIR_LIB)/$(STATIC_LIBNAME)
 	@echo made $(STATIC_LIBNAME)
-
-install \
-install.libs :: \
-		$(BUILD_DIR_LIB)/$(STATIC_LIBNAME) \
-		$(ADA_OBJECTS)
-	@$(INSTALL_LIB) \
-		$(BUILD_DIR_LIB)/$(STATIC_LIBNAME) \
-		$(ADA_OBJECTS)
-
-uninstall \
-uninstall.libs ::
-	@rm -f $(ADA_OBJECTS)/$(STATIC_LIBNAME)
 
 mostlyclean ::
 	rm -f *.o *.ali b_t*.* *.s $(PROGS) a.out core b_*_test.c *.xr[bs] *.a
@@ -270,25 +255,19 @@ STATIC_DIRS = \
 @USE_GNAT_PROJECTS@		$(ABASE)-trace.adb \
 @USE_GNAT_PROJECTS@		$(STATIC_C_OBJS) \
 @USE_GNAT_PROJECTS@		$(STATIC_DIRS)
-@USE_GNAT_PROJECTS@	@cf_ada_config@gprconfig --batch --config=Ada --config=C,,,,@cf_ada_config_C@
 @USE_GNAT_PROJECTS@	-rm -f $(GNAT_PROJECT)
-@USE_GNAT_PROJECTS@	$(SHELL) $(srcdir)/library-cfg.sh static $(srcdir)/library.gpr $(CFLAGS_NORMAL) >$(GNAT_PROJECT)
+@USE_GNAT_PROJECTS@	$(SHELL) $(srcdir)/library-cfg.sh static $(srcdir)/library.gpr $(CFLAGS_NORMAL) > $(GNAT_PROJECT)
 @USE_GNAT_PROJECTS@	@echo "Using GNAT Project:"
 @USE_GNAT_PROJECTS@	@-$(SHELL) -c "diff -u $(srcdir)/library.gpr $(GNAT_PROJECT); exit 0"
-@USE_GNAT_PROJECTS@	$(ADAMAKE) $(ADAMAKEFLAGS) -XLIB_KIND=static
-@USE_GNAT_PROJECTS@	$(AR) $(ARFLAGS) $@ $(STATIC_C_OBJS)
-@USE_GNAT_PROJECTS@	-rm -f $(GNAT_PROJECT)
+@USE_GNAT_PROJECTS@	gprbuild -p $(ADAMAKEFLAGS) -XLIB_KIND=static
 @USE_GNAT_PROJECTS@
 @USE_GNAT_LIBRARIES@install \
-@USE_GNAT_LIBRARIES@install.libs :: \
-@USE_GNAT_LIBRARIES@		$(ADA_OBJECTS)
-@USE_GNAT_LIBRARIES@	$(INSTALL_LIB) \
-@USE_GNAT_LIBRARIES@		$(BUILD_DIR)/static-ali/*.ali \
-@USE_GNAT_LIBRARIES@		$(ADA_OBJECTS)
+@USE_GNAT_LIBRARIES@install.libs ::
+@USE_GNAT_LIBRARIES@	gprinstall -f -p --prefix="$(prefix)" $(ADAMAKEFLAGS) -XLIB_KIND=static
 
 uninstall \
 uninstall.libs ::
-	@rm -f $(ADA_OBJECTS)/$(STATIC_LIBNAME)
+	gprinstall -f --prefix="$(prefix)" --uninstall $(ADAMAKEFLAGS) -XLIB_KIND=static
 
 @USE_GNAT_LIBRARIES@uninstall \
 @USE_GNAT_LIBRARIES@uninstall.libs ::
@@ -316,22 +295,6 @@ SHARED_DIRS = \
 @MAKE_ADA_SHAREDLIB@	$(ADAMAKE) $(ADAMAKEFLAGS) -XLIB_KIND=dynamic
 @MAKE_ADA_SHAREDLIB@	-rm -f $(GNAT_PROJECT)
 
-install \
-install.libs :: $(ADA_INCLUDE)
-	$(INSTALL_LIB) \
-		$(SOURCE_DIR_SRC)/*.ad[sb] \
-		$(ADA_INCLUDE)
-
-install \
-install.libs :: $(ADA_INCLUDE)
-	$(INSTALL_LIB) \
-		$(GENERATED_SOURCES) \
-		$(ADA_INCLUDE)
-
-uninstall \
-uninstall.libs ::
-	$(SHELL) -c 'for name in $(SOURCE_DIR_SRC)/*.ad[sb] $(GENERATED_SOURCES); do rm -f $(ADA_INCLUDE)/`basename $$name`; done'
-
 @MAKE_ADA_SHAREDLIB@install \
 @MAKE_ADA_SHAREDLIB@install.libs :: $(ADA_OBJECTS) $(LIBDIR)
 @MAKE_ADA_SHAREDLIB@	$(INSTALL_LIB) \
@@ -351,8 +314,9 @@ uninstall.libs ::
 @MAKE_ADA_SHAREDLIB@	rm -f $(LIBDIR)/$(SHARED_SYMLINK)
 @MAKE_ADA_SHAREDLIB@	rm -f $(LIBDIR)/$(SHARED_LIBNAME)
 
+rm-docs :
+	gnatdoc --enable-build $(ADAMAKEFLAGS) -XLIB_KIND=static
+
 clean ::
-	-rm -f default.cgpr
-	-rm -rf $(BUILD_DIR)/*-ali
-	-rm -rf $(BUILD_DIR)/*-obj
-	-rm -rf $(BUILD_DIR_LIB)
+@USE_GNAT_PROJECTS@	gprclean $(ADAMAKEFLAGS) -XLIB_KIND=static
+@MAKE_ADA_SHAREDLIB@	gprclean $(ADAMAKEFLAGS) -XLIB_KIND=dynamic

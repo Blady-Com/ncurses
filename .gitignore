@@ -1,0 +1,7 @@
+*.o
+*.ali
+/Ada95/static-ali/
+/Ada95/static-obj/
+/include/
+/lib/
+*.dSYM/
