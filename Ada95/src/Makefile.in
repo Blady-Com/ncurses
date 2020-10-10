@@ -407,10 +407,10 @@ uninstall.libs ::
 @MAKE_ADA_SHAREDLIB@	rm -f $(LIBDIR)/$(SHARED_SYMLINK)
 @MAKE_ADA_SHAREDLIB@	rm -f $(LIBDIR)/$(SHARED_LIBNAME)
 
-#rm-docs :
-#	$(SHELL) $(srcdir)/library-cfg.sh static library.gpr $(CFLAGS_NORMAL) >$(GNAT_PROJECT)
-#	gnatdoc --enable-build $(ADAMAKEFLAGS) -XLIB_KIND=static
-#	gnatdoc --enable-build $(ADAMAKEFLAGS) -XLIB_KIND=dynamic
+rm-docs :
+	$(SHELL) $(srcdir)/library-cfg.sh static library.gpr $(CFLAGS_NORMAL) >$(GNAT_PROJECT)
+	gnatdoc --enable-build $(ADAMAKEFLAGS) -XLIB_KIND=static
+	gnatdoc --enable-build $(ADAMAKEFLAGS) -XLIB_KIND=dynamic
 
 clean ::
 	-rm -f default.cgpr
