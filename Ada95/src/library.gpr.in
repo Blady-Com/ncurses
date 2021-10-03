@@ -43,7 +43,12 @@ project AdaCurses is
   for Source_Dirs use (Source_Dir & "/src",
                        Source_Dir2,
                        Build_Dir & "/src");
-  -- for Library_Options use ("-lncurses@USE_LIB_SUFFIX@", "-lpanel@USE_LIB_SUFFIX@", "-lmenu@USE_LIB_SUFFIX@", "-lform@USE_LIB_SUFFIX@");
+  case Kind is
+    when "dynamic" =>
+      for Library_Options use ("-lncurses@USE_LIB_SUFFIX@", "-lpanel@USE_LIB_SUFFIX@", "-lmenu@USE_LIB_SUFFIX@", "-lform@USE_LIB_SUFFIX@");
+    when others =>
+      null;
+  end case;
   package Compiler is
      for Default_Switches ("Ada") use
        ("-g",
@@ -56,15 +61,10 @@ project AdaCurses is
   end Compiler;
   for Languages use ("C", "Ada");
   package Install is
-     for Install_Name use "adacurses";
      -- for Artifacts ("share/doc/adacurses") use ("../doc/Ada95.html", "../doc/ada");
-     -- for Artifacts ("share/doc/adacurses/adacurses_rm") use ("../" & Kind & "-obj" & "/gnatdoc/*");
-     for Artifacts ("lib/ada/adalib") use
-        ("../src/*.ali");
-     for Artifacts ("share/ada/adainclude") use
-        ("../src/*.ad?");
-     -- for Artifacts ("share/examples/adacurses") use
-     --    ("../samples/*.ad?", "../samples/explain.txt", "../samples/Makefile", "../samples/README");
+     for Artifacts ("share/doc/adacurses/adacurses_rm") use ("../" & Kind & "-obj" & "/gnatdoc/*");
+     for Artifacts ("share/examples/adacurses") use
+         ("../samples/*.ad?", "../samples/explain.txt", "../samples/Makefile", "../samples/README");
      -- for Artifacts ("share/man/man1") use ("../doc/adacurses-config.1");
      for Artifacts ("bin") use ("../gen/adacurses-config");
   end Install;

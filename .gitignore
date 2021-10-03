@@ -1,0 +1,9 @@
+/Ada95/dynamic-obj/
+/Ada95/static-obj/
+/Ada95/dynamic-ali/
+/Ada95/static-ali/
+/Ada95/lib/
+/lib/
+*.o
+*.ali
+*.dSYM
