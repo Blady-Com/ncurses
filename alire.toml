@@ -14,6 +14,12 @@ licenses = "X11 OR MIT"
 
 project-files = ["Ada95/lib_adacurses.gpr"]
 
+[available.'case(os)']
+linux   = true
+macos   = true
+windows = false
+'...'   = false
+
 [[depends-on]]
 m4_tool = "*"
 
